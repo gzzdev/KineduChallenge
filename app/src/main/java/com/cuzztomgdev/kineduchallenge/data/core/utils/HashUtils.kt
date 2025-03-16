@@ -1,4 +1,4 @@
-package com.cuzztomgdev.kineduchallenge.data.utils
+package com.cuzztomgdev.kineduchallenge.data.core.utils
 
 import java.math.BigInteger
 import java.security.MessageDigest
