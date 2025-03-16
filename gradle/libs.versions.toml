@@ -1,6 +1,14 @@
 [versions]
 agp = "8.9.0"
-kotlin = "2.0.21"
+kotlin = "1.9.22"
+navigation = "2.7.5"
+hilt = "2.51.1"
+ksp = "1.9.22-1.0.17"
+retrofit = "2.9.0"
+okhttp = "4.11.0"
+
+glide = "4.16.0"
+
 coreKtx = "1.10.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
@@ -12,6 +20,22 @@ constraintlayout = "2.1.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }
+androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation" }
+
+
+dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "hilt" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hilt" }
+
+retrofit-core = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+
+okhttp-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "okhttp" }
+
+glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide"}
+glide-compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "glide"}
+
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -22,5 +46,8 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+navigation-safe-args = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
 
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+android-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
