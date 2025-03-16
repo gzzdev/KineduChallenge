@@ -1,10 +1,11 @@
-package com.cuzztomgdev.kineduchallenge
+package com.cuzztomgdev.kineduchallenge.ui.home
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.cuzztomgdev.kineduchallenge.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
