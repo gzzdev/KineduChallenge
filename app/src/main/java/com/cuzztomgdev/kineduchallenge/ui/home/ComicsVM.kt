@@ -18,7 +18,6 @@ class ComicsVM @Inject constructor(private val getComicsUC: GetComicsUC): ViewMo
     private var _state = MutableStateFlow<ComicsState>(ComicsState.Loading)
     val comicsState: StateFlow<ComicsState> = _state
 
-
     fun getComics(offset: Int = 0, limit: Int = 12) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = ComicsState.Loading
@@ -31,4 +30,7 @@ class ComicsVM @Inject constructor(private val getComicsUC: GetComicsUC): ViewMo
             }
         }
     }
+
+    fun isLoading(): Boolean = comicsState.value is ComicsState.Loading
+
 }

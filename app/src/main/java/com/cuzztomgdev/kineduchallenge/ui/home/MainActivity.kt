@@ -10,6 +10,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.cuzztomgdev.kineduchallenge.databinding.ActivityMainBinding
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
 import com.cuzztomgdev.kineduchallenge.ui.home.adapter.ComicsAdapter
@@ -36,18 +38,31 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setup() {
-        binding.rvComics.adapter = comicsAdapter
-        comicsVM.getComics()
+        setupRV()
         initUIState()
     }
+    private fun setupRV() {
+        binding.rvComics.adapter = comicsAdapter
+        comicsVM.getComics(0, 12)
+        binding.rvComics.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as GridLayoutManager
+                val totalItemCount = layoutManager.itemCount
+                val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
+                val visibleThreshold = layoutManager.spanCount * 3 // Ajuste dinámico
 
+                if (!comicsVM.isLoading() && totalItemCount <= lastVisibleItem + visibleThreshold) {
+                    comicsVM.getComics(totalItemCount, 12)
+                }
+            }
+        })
+
+    }
     private fun initUIState() {
-        var offset = 0
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 comicsVM.comicsState.collect {
-                    offset += 1
-                    Log.i("MainActivity", "State: $it $offset")
                     when (it) {
                         ComicsState.Loading -> loadingState()
                         is ComicsState.Error -> errorState()
@@ -59,18 +74,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadingState() {
-
+        Log.i("Main Activity", "Loading state")
+        comicsAdapter.showLoading()
     }
 
     private fun errorState() {
-
+        comicsAdapter.hideLoading()
     }
 
     private fun successState(state: ComicsState.Success) {
+        comicsAdapter.hideLoading()
         comicsAdapter.updateList(state.comics)
     }
 
     private fun onClickComic(comic: Comic) {
-
+        Log.i("Main Activity", "onClickComic: ${comic.id}")
     }
 }

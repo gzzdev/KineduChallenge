@@ -9,7 +9,6 @@ interface MarvelApiService {
     @GET("/v1/public/comics")
     suspend fun getComics(
         @Query("offset") offset: Int,
-        @Query("limit") limit: Int,
-        @Query("orderBy") orderBy: String = "modified"
+       @Query("limit") limit: Int
     ): ComicsResponse
 }
