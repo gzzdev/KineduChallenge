@@ -5,8 +5,9 @@ import com.cuzztomgdev.kineduchallenge.data.core.utils.generateHash
 import com.cuzztomgdev.kineduchallenge.data.core.utils.getTimestamp
 import okhttp3.Interceptor
 import okhttp3.Response
+import javax.inject.Inject
 
-class AuthInterceptor: Interceptor {
+class AuthInterceptor @Inject constructor() : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val ts = getTimestamp()

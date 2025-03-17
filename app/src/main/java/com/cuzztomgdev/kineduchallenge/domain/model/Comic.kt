@@ -4,6 +4,5 @@ data class Comic(
     val id: Int,
     val title: String,
     val description: String?,
-    //val thumbnail: Thumbnail,
-    //val images: List<Image>
+    val imageUri: String
 )
