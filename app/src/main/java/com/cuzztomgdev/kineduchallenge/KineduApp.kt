@@ -1,4 +1,4 @@
-package com.cuzztomgdev.kineduchallenge.ui
+package com.cuzztomgdev.kineduchallenge
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

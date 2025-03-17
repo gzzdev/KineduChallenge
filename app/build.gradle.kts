@@ -1,5 +1,9 @@
-val PrivateApiKey = project.findProperty("PrivateKey")
-val PublicApiKey = project.findProperty("PublicKey")
+import java.util.Properties
+val localProperties = Properties()
+localProperties.load(project.rootProject.file("local.properties").inputStream())
+val privateApiKey = localProperties.getProperty("PrivateKey")
+val publicApiKey = localProperties.getProperty("PublicKey")
+val baseUrl = localProperties.getProperty("BaseApi")
 
 plugins {
     alias(libs.plugins.android.application)
@@ -18,10 +22,6 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
-        buildConfigField("String", "PRIVATE_API_KEY", "\"${PrivateApiKey}\"")
-        buildConfigField("String", "PUBLIC_API_KEY", "\"${PublicApiKey}\"")
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -31,12 +31,22 @@ android {
     }
 
     buildTypes {
+        debug {
+
+
+            buildConfigField("String", "PRIVATE_API_KEY", "\"${privateApiKey}\"")
+            buildConfigField("String", "PUBLIC_API_KEY", "\"${publicApiKey}\"")
+            buildConfigField("String", "BASE_API", "\"${baseUrl}\"")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "PRIVATE_API_KEY", "\"${privateApiKey}\"")
+            buildConfigField("String", "PUBLIC_API_KEY", "\"${publicApiKey}\"")
+            buildConfigField("String", "BASE_API", "\"${baseUrl}\"")
         }
     }
 

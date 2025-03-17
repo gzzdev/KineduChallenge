@@ -7,6 +7,6 @@ fun ComicDTO.toDomain(): Comic =
     Comic(
         id = this.id,
         title = this.title,
-        description=this.description,
+        description=this.description.orEmpty(),
         imageUri=this.thumbnail.getUri()
     )

@@ -4,5 +4,6 @@ import com.cuzztomgdev.kineduchallenge.domain.Repository
 import javax.inject.Inject
 
 class GetComicsUC @Inject constructor(private val repository: Repository) {
-    suspend operator fun invoke(offset: Int = 0, limit: Int = 100) = repository.getComics()
+    suspend operator fun invoke(offset: Int = 0, limit: Int = 5) =
+        repository.getComics(offset, limit)
 }

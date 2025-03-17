@@ -5,6 +5,7 @@ data class ThumbnailDTO(
     val extension: String
 ) {
     fun getUri(): String {
-        return "$path.$extension"
+        val pathHttp = path.replace("http", "https")
+        return "$pathHttp.$extension"
     }
 }

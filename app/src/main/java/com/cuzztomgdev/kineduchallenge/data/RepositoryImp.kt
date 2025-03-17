@@ -11,12 +11,12 @@ class RepositoryImp @Inject constructor(private val marvelApiService: MarvelApiS
 
     override suspend fun getComics(offset: Int, limit: Int): List<Comic> {
         runCatching {
-                marvelApiService.getComics(
-                    offset,
-                    limit
-                )
-            }.onSuccess { return it.data.result.map { dao -> dao .toDomain() } }
-            .onFailure { Log.i("Repository", "GetComics error: ${it.message}") }
+                marvelApiService.getComics(offset, limit)
+            }.onSuccess {
+                return it.data.results.map { dao ->
+                    dao.toDomain() }
+            }
+            .onFailure { Log.i("Main Repository", "GetComics error: ${it.message}") }
         return emptyList()
     }
 }
