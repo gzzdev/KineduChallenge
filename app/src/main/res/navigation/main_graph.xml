@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_graph"
+    app:startDestination="@id/comicsFragment">
+
+    <fragment
+        android:id="@+id/comicsFragment"
+        android:name="com.cuzztomgdev.kineduchallenge.ui.home.ComicsFragment"
+        android:label="fragment_comics"
+        tools:layout="@layout/fragment_comics" >
+        <action
+            android:id="@+id/action_comicsFragment_to_comicDetailActivity"
+            app:destination="@id/comicDetailActivity"/>
+    </fragment>
+    <activity
+        android:id="@+id/comicDetailActivity"
+        android:name="com.cuzztomgdev.kineduchallenge.ui.detail.ComicDetailActivity"
+        android:label="activity_comic_detail"
+        tools:layout="@layout/activity_comic_detail" >
+        <argument
+            android:name="comic"
+            app:argType="com.cuzztomgdev.kineduchallenge.domain.model.Comic" />
+    </activity>
+</navigation>

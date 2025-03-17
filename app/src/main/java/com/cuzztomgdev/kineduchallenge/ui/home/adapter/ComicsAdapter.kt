@@ -4,37 +4,29 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.cuzztomgdev.kineduchallenge.R
 import com.cuzztomgdev.kineduchallenge.databinding.ItemComicBinding
 import com.cuzztomgdev.kineduchallenge.databinding.ItemLoadingBinding
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
 import com.cuzztomgdev.kineduchallenge.ui.home.ViewHolderType
-
+import com.cuzztomgdev.kineduchallenge.ui.utils.Utils.formatTitle
+import com.cuzztomgdev.kineduchallenge.ui.utils.Utils.requestOptions
 class ComicsAdapter(
     private val onClick: (Comic) -> Unit,
-    private var comics: List<Comic> = emptyList()
+    private var comics: MutableList<Comic> = mutableListOf()
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    companion object {
-        private val PARENTHESES_REGEX = "\\(.*?\\)".toRegex()
-        private val requestOptions = RequestOptions().centerCrop() // To fit cover
-
-        private val LOADING_ITEM = Comic(-1, "", "")
-        fun formatTitle(title: String): String {
-            // To remove the year from the title and another info
-            return PARENTHESES_REGEX.replace(title, "")
-        }
-    }
-
     private var isLoading = false
 
     fun updateList(newComics: List<Comic>){
-        val oldSize = comics.size
-        comics = comics + newComics
-        notifyItemRangeInserted(oldSize, newComics.size)
+        val diffCallback = ComicDiffCallback(comics, newComics)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        val a = mutableListOf<Comic>()
+        comics.clear()
+        comics.addAll(newComics)
+        diffResult.dispatchUpdatesTo(this)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {

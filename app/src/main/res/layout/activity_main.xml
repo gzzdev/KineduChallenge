@@ -5,25 +5,12 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.MainActivity">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_comics"
-        android:isScrollContainer="true"
-        android:contentDescription="@string/rv_comics"
-        tools:listitem="@layout/item_comic"
-        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="3"
+    tools:context=".MainActivity">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <!--<com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/pb_comics"
-        android:indeterminate="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:trackColor="@color/bg_red"
-        app:indicatorColor="@color/red"
-        app:trackCornerRadius="10dp"
-        app:indicatorSize="50dp"
-        app:trackThickness="10dp" />-->
+        android:layout_height="match_parent"
+        app:navGraph="@navigation/main_graph"
+        app:defaultNavHost="true" />
 </LinearLayout>

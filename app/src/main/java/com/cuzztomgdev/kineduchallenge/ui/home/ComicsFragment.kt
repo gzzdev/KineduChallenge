@@ -2,39 +2,49 @@ package com.cuzztomgdev.kineduchallenge.ui.home
 
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.enableEdgeToEdge
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.view.LayoutInflater
+import androidx.fragment.app.Fragment
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.cuzztomgdev.kineduchallenge.databinding.ActivityMainBinding
+import com.cuzztomgdev.kineduchallenge.databinding.FragmentComicsBinding
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
 import com.cuzztomgdev.kineduchallenge.ui.home.adapter.ComicsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityMainBinding
-    private val comicsVM: ComicsVM by viewModels()
+class ComicsFragment : Fragment() {
+
+    private val comicsVM: ComicsVM by viewModels<ComicsVM>()
     private val comicsAdapter: ComicsAdapter by lazy { ComicsAdapter(::onClickComic) }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        enableEdgeToEdge()
-        setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
+    private var _binding: FragmentComicsBinding? = null
+    private val binding get() = _binding!!
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentComicsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Log.i("Main Activity", "onViewCreated")
         setup()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     private fun setup() {
@@ -42,8 +52,10 @@ class MainActivity : AppCompatActivity() {
         initUIState()
     }
     private fun setupRV() {
-        binding.rvComics.adapter = comicsAdapter
-        comicsVM.getComics(0, 12)
+        if(binding.rvComics.adapter == null){
+            binding.rvComics.adapter = comicsAdapter
+        }
+
         binding.rvComics.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -53,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                 val visibleThreshold = layoutManager.spanCount * 3 // Ajuste dinámico
 
                 if (!comicsVM.isLoading() && totalItemCount <= lastVisibleItem + visibleThreshold) {
-                    comicsVM.getComics(totalItemCount, 12)
+                    comicsVM.getComics(true, totalItemCount, 12)
                 }
             }
         })
@@ -64,6 +76,9 @@ class MainActivity : AppCompatActivity() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 comicsVM.comicsState.collect {
                     when (it) {
+                        ComicsState.Start -> {
+                            comicsVM.getComics(false,0, 12)
+                        }
                         ComicsState.Loading -> loadingState()
                         is ComicsState.Error -> errorState()
                         is ComicsState.Success -> successState(it)
@@ -89,5 +104,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun onClickComic(comic: Comic) {
         Log.i("Main Activity", "onClickComic: ${comic.id}")
+        ComicsFragmentDirections.actionComicsFragmentToComicDetailActivity(comic)
     }
 }

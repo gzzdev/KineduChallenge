@@ -1,32 +1,38 @@
 package com.cuzztomgdev.kineduchallenge.ui.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.cuzztomgdev.kineduchallenge.domain.model.Comic
 import com.cuzztomgdev.kineduchallenge.domain.usecase.GetComicsUC
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class ComicsVM @Inject constructor(private val getComicsUC: GetComicsUC): ViewModel() {
-
-    private var _state = MutableStateFlow<ComicsState>(ComicsState.Loading)
+    private val _comics = mutableListOf<Comic>()
+    private var _state = MutableStateFlow<ComicsState>(ComicsState.Start)
     val comicsState: StateFlow<ComicsState> = _state
 
-    fun getComics(offset: Int = 0, limit: Int = 12) {
+    fun getComics(scroll: Boolean = false, offset: Int = 0, limit: Int = 12) {
+        if (!scroll && isLoading()) {
+            return
+        }
         viewModelScope.launch(Dispatchers.IO) {
             _state.value = ComicsState.Loading
             // Secondary Thread
-            val comics = getComicsUC(offset, limit)
-            if (comics.isEmpty()) {
+            val newComics = getComicsUC(offset, limit)
+            if (newComics.isEmpty()) {
                 _state.value = ComicsState.Error("No se encontraron comics")
             } else {
-                _state.value = ComicsState.Success(comics)
+                val uniqueComics = newComics.filter { newComic ->
+                    _comics.none { existingComic -> existingComic.id == newComic.id }
+                }
+                _comics.addAll(uniqueComics)
+                _state.value = ComicsState.Success(_comics.toList())
             }
         }
     }

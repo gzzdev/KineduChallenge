@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.android.hilt)
+    alias(libs.plugins.navigation.safe.args)
 }
 
 android {
@@ -73,6 +74,7 @@ dependencies {
 
     //Hilt
     implementation(libs.hilt.android)
+    implementation(libs.androidx.fragment)
     ksp(libs.dagger.compiler)
     ksp(libs.hilt.compiler)
 
