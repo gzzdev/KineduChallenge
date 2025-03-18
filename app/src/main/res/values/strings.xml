@@ -3,6 +3,9 @@
     <string name="rv_comics">Marvel Comics</string>
     <string name="comic">Comic</string>
     <string name="comic_details">Comic Details</string>
-    <string name="no_description">Sin descripción</string>
+    <string name="no_description">No description</string>
     <string name="search_comics">Search Comics</string>
+    <string name="unknow_creator">Unknow Creator</string>
+    <string name="more_about_creator">More from Creator</string>
+    <string name="not_found">Not more comics</string>
 </resources>

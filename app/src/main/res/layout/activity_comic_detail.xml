@@ -35,9 +35,10 @@
         app:layout_constraintEnd_toStartOf="@id/tv_title">
         <ImageView
             android:id="@+id/iv_cover"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cover_placeholder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:src="@drawable/ic_launcher_background" />
+            android:layout_height="match_parent" />
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -71,12 +72,14 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cv_creator"
+        android:backgroundTint="@color/md_theme_tertiaryContainer"
         app:cardCornerRadius="@dimen/corner_radious"
         android:elevation="@dimen/min_elevation"
         android:layout_margin="@dimen/margin"
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        app:layout_constraintTop_toBottomOf="@id/cv_cover">
+        android:layout_height="80dp"
+        app:layout_constraintTop_toBottomOf="@id/cv_cover"
+        app:layout_constraintBottom_toTopOf="@id/ly_more">
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -84,11 +87,11 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/iv_creator"
                 app:shapeAppearanceOverlay="@style/roundedImageViewRounded"
-                android:src="@drawable/avatar"
+                android:src="@drawable/baseline_person_pin_24"
                 android:layout_margin="@dimen/big_margin"
                 android:layout_gravity="center_vertical"
-                android:layout_width="80dp"
-                android:layout_height="80dp"/>
+                android:layout_width="72dp"
+                android:layout_height="72dp"/>
             <LinearLayout
                 android:orientation="vertical"
                 android:gravity="center_vertical"
@@ -98,18 +101,84 @@
                     android:id="@+id/tv_creator_name"
                     android:textSize="@dimen/small_size"
                     android:textStyle="bold"
-                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:text="@string/unknow_creator"
+                    android:textColor="@color/md_theme_onTertiaryContainer"
                     tools:text="Stan lee"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
                 <TextView
                     android:id="@+id/tv_creator_role"
                     android:textSize="@dimen/small_size"
-                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textColor="@color/md_theme_onTertiaryContainer"
                     tools:text="Writer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/ly_more"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/margin"
+        app:layout_constraintTop_toBottomOf="@id/cv_creator"
+        app:layout_constraintBottom_toBottomOf="parent" >
+
+        <TextView
+            android:id="@+id/tv_more"
+            android:layout_margin="@dimen/margin"
+            android:textColor="@color/md_theme_onSurface"
+            android:text="@string/more_about_creator"
+            android:textSize="@dimen/max_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.divider.MaterialDivider
+            android:backgroundTint="@color/md_theme_onSurface"
+            android:layout_marginStart="@dimen/margin"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            app:layout_constraintTop_toTopOf="@id/tv_more"
+            app:layout_constraintStart_toEndOf="@id/tv_more"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/tv_more" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_comics"
+            android:layout_marginTop="@dimen/margin"
+            android:isScrollContainer="true"
+            android:contentDescription="@string/rv_comics"
+            tools:listitem="@layout/item_comic"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+            app:spanCount="3"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@id/tv_more"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            app:trackColor="@color/md_theme_secondary"
+            app:indicatorColor="@color/md_theme_primary"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_more"
+            app:layout_constraintBottom_toBottomOf="parent" />
+        <TextView
+            android:id="@+id/tv_not_found"
+            android:visibility="gone"
+            android:textSize="@dimen/max_size"
+            android:text="@string/not_found"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_more"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
