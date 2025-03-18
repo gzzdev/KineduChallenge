@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -50,7 +52,18 @@ class ComicsFragment : Fragment() {
     private fun setup() {
         setupRV()
         initUIState()
+        binding.svComics.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String?): Boolean {
+                newText?.let { comicsVM.searchComics(newText) }
+                return true
+            }
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                query?.let { comicsVM.searchComics(query) }
+                return true
+            }
+        })
     }
+
     private fun setupRV() {
         if(binding.rvComics.adapter == null){
             binding.rvComics.adapter = comicsAdapter
@@ -64,7 +77,7 @@ class ComicsFragment : Fragment() {
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                 val visibleThreshold = layoutManager.spanCount * 3 // Ajuste dinámico
 
-                if (!comicsVM.isLoading() && totalItemCount <= lastVisibleItem + visibleThreshold) {
+                if (!comicsVM.isLoading() && totalItemCount >= comicsVM.totalComics() && totalItemCount <= lastVisibleItem + visibleThreshold) {
                     comicsVM.getComics(true, totalItemCount, 12)
                 }
             }
@@ -95,6 +108,7 @@ class ComicsFragment : Fragment() {
 
     private fun errorState() {
         comicsAdapter.hideLoading()
+        Toast.makeText(requireContext(), "No se encontraron comics", Toast.LENGTH_SHORT).show()
     }
 
     private fun successState(state: ComicsState.Success) {
@@ -104,6 +118,6 @@ class ComicsFragment : Fragment() {
 
     private fun onClickComic(comic: Comic) {
         Log.i("Main Activity", "onClickComic: ${comic.id}")
-        ComicsFragmentDirections.actionComicsFragmentToComicDetailActivity(comic)
+        findNavController().navigate(ComicsFragmentDirections.actionComicsFragmentToComicDetailActivity(comic))
     }
 }

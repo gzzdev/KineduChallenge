@@ -23,7 +23,6 @@ class ComicsAdapter(
     fun updateList(newComics: List<Comic>){
         val diffCallback = ComicDiffCallback(comics, newComics)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
-        val a = mutableListOf<Comic>()
         comics.clear()
         comics.addAll(newComics)
         diffResult.dispatchUpdatesTo(this)
