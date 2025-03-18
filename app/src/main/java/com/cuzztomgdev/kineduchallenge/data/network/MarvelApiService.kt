@@ -1,7 +1,9 @@
 package com.cuzztomgdev.kineduchallenge.data.network
 
 import com.cuzztomgdev.kineduchallenge.data.network.response.ComicsResponse
+import com.cuzztomgdev.kineduchallenge.data.network.response.CreatorsResponse
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MarvelApiService {
@@ -11,4 +13,9 @@ interface MarvelApiService {
         @Query("offset") offset: Int,
        @Query("limit") limit: Int
     ): ComicsResponse
+
+    @GET("/v1/public/creators/{creatorId}")
+    suspend fun getCreator(
+        @Path("creatorId") creatorId: Int
+    ): CreatorsResponse
 }

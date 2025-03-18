@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.cuzztomgdev.kineduchallenge.data.local.entity.CreatorEntity
 
 @Dao
@@ -13,5 +14,8 @@ interface CreatorDao {
 
     @Query("SELECT * FROM creators WHERE id = :creatorId")
     suspend fun getCreatorById(creatorId: Int): CreatorEntity?
+
+    @Update
+    suspend fun update(creator: CreatorEntity)
 
 }

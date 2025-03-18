@@ -2,6 +2,7 @@ package com.cuzztomgdev.kineduchallenge.data.core.mapper
 
 import com.cuzztomgdev.kineduchallenge.data.local.entity.CreatorEntity
 import com.cuzztomgdev.kineduchallenge.data.network.dto.ComicDTO
+import com.cuzztomgdev.kineduchallenge.data.network.dto.CreatorDTO
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
 import com.cuzztomgdev.kineduchallenge.domain.model.Creator
 
@@ -14,4 +15,12 @@ fun ComicDTO.toDomain(): Comic =
         creators = this.creators.items.map { it -> it.getIdFromResourceURI() }
     )
 
+fun CreatorDTO.toDomain(): Creator = Creator(
+    id = this.id,
+    name = this.fullName,
+    role = "",
+    imageUri = this.thumbnail.getUri()
+)
+
 fun CreatorEntity.toDomain(): Creator = Creator(this.id, this.name, this.role, this.resourceURI)
+fun Creator.toEntity(): CreatorEntity = CreatorEntity(this.id, this.name, this.role, this.imageUri)

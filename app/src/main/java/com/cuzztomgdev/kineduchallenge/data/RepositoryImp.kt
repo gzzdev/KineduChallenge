@@ -2,6 +2,7 @@ package com.cuzztomgdev.kineduchallenge.data
 
 import android.util.Log
 import com.cuzztomgdev.kineduchallenge.data.core.mapper.toDomain
+import com.cuzztomgdev.kineduchallenge.data.core.mapper.toEntity
 import com.cuzztomgdev.kineduchallenge.data.local.CreatorDao
 import com.cuzztomgdev.kineduchallenge.data.local.entity.CreatorEntity
 import com.cuzztomgdev.kineduchallenge.data.network.MarvelApiService
@@ -45,6 +46,28 @@ class RepositoryImp @Inject constructor(
     }
 
     override suspend fun getCreatorById(creatorId: Int): Creator? {
-        return creatorDao.getCreatorById(creatorId)?.toDomain()
+        var creator = creatorDao.getCreatorById(creatorId)?.toDomain()
+        if (creator == null)
+            return creator
+
+        if (creator.imageUri.isNotEmpty())
+            return creator
+
+        val imgUri = getCreatorImage(creatorId)
+        creator = creator.copy(imageUri = imgUri)
+        creatorDao.update(creator.toEntity())
+        return creator
+    }
+
+    override suspend fun getCreatorImage(creatorId: Int): String {
+        runCatching {
+            marvelApiService.getCreator(creatorId)
+        }.onSuccess { response ->
+            Log.i("Main Repository", "GetComics: $response")
+            return response.data.results.first().toDomain().imageUri
+        }.onFailure {
+            Log.i("Main Repository", "GetComics error: ${it.message}")
+        }
+        return ""
     }
 }
