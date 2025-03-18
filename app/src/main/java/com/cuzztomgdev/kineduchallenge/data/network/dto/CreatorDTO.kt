@@ -5,7 +5,8 @@ data class CreatorDTO(
     val firstName: String,
     val middleName: String,
     val fullName: String,
-    val thumbnail: ThumbnailDTO
+    val thumbnail: ThumbnailDTO,
+    val comics: ResourceDTO<CreatorComicDTO>
 )
 
 

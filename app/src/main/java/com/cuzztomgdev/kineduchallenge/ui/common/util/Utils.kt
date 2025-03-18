@@ -1,4 +1,4 @@
-package com.cuzztomgdev.kineduchallenge.ui.utils
+package com.cuzztomgdev.kineduchallenge.ui.common.util
 
 import com.bumptech.glide.request.RequestOptions
 

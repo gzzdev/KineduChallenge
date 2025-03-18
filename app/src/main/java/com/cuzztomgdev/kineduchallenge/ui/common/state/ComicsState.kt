@@ -1,4 +1,4 @@
-package com.cuzztomgdev.kineduchallenge.ui.home
+package com.cuzztomgdev.kineduchallenge.ui.common.state
 
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
 

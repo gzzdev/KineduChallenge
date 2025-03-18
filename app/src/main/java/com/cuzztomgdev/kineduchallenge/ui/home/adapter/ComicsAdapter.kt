@@ -1,7 +1,6 @@
 package com.cuzztomgdev.kineduchallenge.ui.home.adapter
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -13,8 +12,8 @@ import com.cuzztomgdev.kineduchallenge.databinding.ItemComicBinding
 import com.cuzztomgdev.kineduchallenge.databinding.ItemLoadingBinding
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
 import com.cuzztomgdev.kineduchallenge.ui.home.ViewHolderType
-import com.cuzztomgdev.kineduchallenge.ui.utils.Utils.formatTitle
-import com.cuzztomgdev.kineduchallenge.ui.utils.Utils.requestOptions
+import com.cuzztomgdev.kineduchallenge.ui.common.util.Utils.formatTitle
+import com.cuzztomgdev.kineduchallenge.ui.common.util.Utils.requestOptions
 class ComicsAdapter(
     private val onClick: (Comic) -> Unit,
     private var comics: MutableList<Comic> = mutableListOf()
@@ -67,11 +66,15 @@ class ComicsAdapter(
             binding.root.animation =
                 AnimationUtils.loadAnimation(context, R.anim.comic_transation)
             binding.tvTitle.text = formatTitle(comic.title)
-            Glide.with(context)
-                .load(comic.imageUri)
-                .apply(requestOptions)
-                .placeholder(context.getDrawable(R.drawable.cover_placeholder))
-                .into(binding.ivCover)
+            Glide.with(context).clear(binding.ivCover)
+            if (!comic.imageUri.contains("not_available")){
+                Glide.with(context)
+                    .load(comic.imageUri)
+                    .apply(requestOptions)
+                    .placeholder(context.getDrawable(R.drawable.cover_placeholder))
+                    .into(binding.ivCover)
+            }
+
             binding.parent.setOnClickListener {
                 onClick(comic)
             }

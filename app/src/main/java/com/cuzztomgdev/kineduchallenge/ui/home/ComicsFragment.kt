@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.cuzztomgdev.kineduchallenge.databinding.FragmentComicsBinding
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
+import com.cuzztomgdev.kineduchallenge.ui.common.state.ComicsState
 import com.cuzztomgdev.kineduchallenge.ui.home.adapter.ComicsAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -79,6 +80,7 @@ class ComicsFragment : Fragment() {
                 val totalItemCount = layoutManager.itemCount
                 val lastVisibleItem = layoutManager.findLastVisibleItemPosition()
                 val visibleThreshold = layoutManager.spanCount * 3 // Ajuste dinámico
+                Log.i("Main Activity", "onScrolled: $lastVisibleItem $visibleThreshold")
 
                 if (!comicsVM.isLoading() && totalItemCount >= comicsVM.totalComics() && totalItemCount <= lastVisibleItem + visibleThreshold) {
                     comicsVM.getComics(true, totalItemCount, 12)
@@ -111,7 +113,7 @@ class ComicsFragment : Fragment() {
 
     private fun errorState() {
         comicsAdapter.hideLoading()
-        Toast.makeText(requireContext(), "No se encontraron comics", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Comics not found", Toast.LENGTH_SHORT).show()
     }
 
     private fun successState(state: ComicsState.Success) {

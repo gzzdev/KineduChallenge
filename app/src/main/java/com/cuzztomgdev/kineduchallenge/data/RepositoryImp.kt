@@ -9,6 +9,9 @@ import com.cuzztomgdev.kineduchallenge.data.network.MarvelApiService
 import com.cuzztomgdev.kineduchallenge.domain.Repository
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
 import com.cuzztomgdev.kineduchallenge.domain.model.Creator
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
 class RepositoryImp @Inject constructor(
@@ -23,6 +26,7 @@ class RepositoryImp @Inject constructor(
                 response.data.results.forEach {
                     try {
                         it.creators.items.forEach { creator ->
+                            Log.i("Main Repository", "GetComics: $creator")
                             creatorDao.insert(
                                 CreatorEntity(
                                     creator.getIdFromResourceURI(),
@@ -45,29 +49,46 @@ class RepositoryImp @Inject constructor(
         return emptyList()
     }
 
-    override suspend fun getCreatorById(creatorId: Int): Creator? {
-        var creator = creatorDao.getCreatorById(creatorId)?.toDomain()
-        if (creator == null)
-            return creator
-
-        if (creator.imageUri.isNotEmpty())
-            return creator
-
-        val imgUri = getCreatorImage(creatorId)
-        creator = creator.copy(imageUri = imgUri)
-        creatorDao.update(creator.toEntity())
-        return creator
+    override suspend fun getComicsByIds(comicsIds: List<Int>): List<Comic> {
+        return coroutineScope {
+            comicsIds.map { comicId ->
+                async {
+                    marvelApiService
+                        .getComicById(comicId)
+                        .data.results
+                        .firstOrNull()?.toDomain()
+                }
+            }.awaitAll().filterNotNull()
+        }
     }
 
-    override suspend fun getCreatorImage(creatorId: Int): String {
+    override suspend fun getCreatorById(creatorId: Int): Creator? {
+        var _creator = creatorDao.getCreatorById(creatorId)?.toDomain()
+        runCatching {
+            marvelApiService.getCreator(creatorId)
+        }.onSuccess { response ->
+            var creator = response.data.results.first().toDomain()
+            creator = creator.copy(role = _creator?.role.orEmpty(), comics = creator.comics)
+            if (_creator!=null)
+                creatorDao.update(creator.toEntity())
+            else
+                creatorDao.insert(creator.toEntity())
+            return creator
+        }.onFailure {
+            Log.i("Main Repository", "GetComics error: ${it.message}")
+        }
+        return null
+    }
+
+    /*override suspend fun getCreatorData(creatorId: Int): Creator? {
         runCatching {
             marvelApiService.getCreator(creatorId)
         }.onSuccess { response ->
             Log.i("Main Repository", "GetComics: $response")
-            return response.data.results.first().toDomain().imageUri
+            return response.data.results.first().toDomain()
         }.onFailure {
             Log.i("Main Repository", "GetComics error: ${it.message}")
         }
-        return ""
-    }
+        return null
+    }*/
 }

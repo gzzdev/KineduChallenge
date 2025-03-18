@@ -19,13 +19,18 @@ import com.cuzztomgdev.kineduchallenge.databinding.ActivityComicDetailBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import com.cuzztomgdev.kineduchallenge.R
-import com.cuzztomgdev.kineduchallenge.ui.utils.Utils.requestOptions
+import com.cuzztomgdev.kineduchallenge.domain.model.Comic
+import com.cuzztomgdev.kineduchallenge.ui.common.state.ComicsState
+import com.cuzztomgdev.kineduchallenge.ui.common.state.CreatorState
+import com.cuzztomgdev.kineduchallenge.ui.common.util.Utils.requestOptions
+import com.cuzztomgdev.kineduchallenge.ui.home.adapter.ComicsAdapter
 
 @AndroidEntryPoint
 class ComicDetailActivity : AppCompatActivity() {
     private lateinit var binding: ActivityComicDetailBinding
     private val args: ComicDetailActivityArgs by navArgs()
     private val comicDetailVM: ComicDetailVM by viewModels()
+    private val comicsAdapter: ComicsAdapter by lazy { ComicsAdapter(::onClickComic) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,7 +42,7 @@ class ComicDetailActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        comicDetailVM.comic =args.comic
+        comicDetailVM.comic = args.comic
         setup()
     }
 
@@ -48,15 +53,17 @@ class ComicDetailActivity : AppCompatActivity() {
         }
         bindComic()
         initUIState()
+        setupRV()
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun bindComic() {
-        Glide.with(this)
-            .load(comicDetailVM.comic.imageUri)
-            .apply(requestOptions)
-            .placeholder(getDrawable(R.drawable.cover_placeholder))
-            .into(binding.ivCover)
+        if (!comicDetailVM.comic.imageUri.contains("not_available"))
+            Glide.with(this)
+                .load(comicDetailVM.comic.imageUri)
+                .apply(requestOptions)
+                .placeholder(getDrawable(R.drawable.cover_placeholder))
+                .into(binding.ivCover)
         binding.tvTitle.text = comicDetailVM.comic.title
         binding.tvDescription.text = comicDetailVM.comic.description.ifEmpty {
             getString(R.string.no_description)
@@ -71,6 +78,8 @@ class ComicDetailActivity : AppCompatActivity() {
                         CreatorState.Start -> {
                             if (comicDetailVM.comic.creators.isNotEmpty()) {
                                 comicDetailVM.creatorInfo()
+                            } else {
+                                errorState()
                             }
                         }
                         CreatorState.Loading -> loadingState()
@@ -88,8 +97,46 @@ class ComicDetailActivity : AppCompatActivity() {
     }
 
     private fun errorState() {
-        binding.cvCreator.isVisible = false
-        Toast.makeText(this, "No se encontraron datos del creador", Toast.LENGTH_SHORT).show()
+        binding.cvCreator.isVisible = true
+        binding.progressBar.isVisible = false
+        binding.tvNotFound.isVisible = true
+        Toast.makeText(this, "Creator not found", Toast.LENGTH_SHORT).show()
+    }
+
+    private fun setupRV() {
+        if(binding.rvComics.adapter == null){
+            binding.rvComics.adapter = comicsAdapter
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                comicDetailVM.comicsState.collect {
+                    when (it) {
+                        ComicsState.Start -> {}
+                        ComicsState.Loading -> {
+                            binding.progressBar.isVisible = true
+                        }
+                        is ComicsState.Error -> {
+                            binding.progressBar.isVisible = false
+                            binding.tvNotFound.isVisible = true
+                            Toast.makeText(
+                                this@ComicDetailActivity,
+                                "More comics not found",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        is ComicsState.Success -> {
+                            binding.progressBar.isVisible = false
+                            comicsAdapter.updateList(it.comics)
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun onClickComic(comic: Comic) {
+
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -103,8 +150,8 @@ class ComicDetailActivity : AppCompatActivity() {
             Glide.with(this)
                 .load(creator.imageUri)
                 .apply(requestOptions)
-                .placeholder(getDrawable(R.drawable.avatar))
-                .error(getDrawable(R.drawable.avatar))
+                .placeholder(getDrawable(R.drawable.baseline_person_pin_24))
+                .error(getDrawable(R.drawable.baseline_person_pin_24))
                 .into(binding.ivCreator)
         }
     }

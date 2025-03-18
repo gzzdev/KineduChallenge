@@ -19,8 +19,13 @@ fun CreatorDTO.toDomain(): Creator = Creator(
     id = this.id,
     name = this.fullName,
     role = "",
-    imageUri = this.thumbnail.getUri()
+    imageUri = this.thumbnail.getUri(),
+    comics = this.comics.items.map { it -> it.getIdFromResourceURI() }
 )
 
-fun CreatorEntity.toDomain(): Creator = Creator(this.id, this.name, this.role, this.resourceURI)
+fun CreatorEntity.toDomain(): Creator = Creator(
+    this.id, this.name, this.role,
+    this.resourceURI, emptyList()
+)
+
 fun Creator.toEntity(): CreatorEntity = CreatorEntity(this.id, this.name, this.role, this.imageUri)

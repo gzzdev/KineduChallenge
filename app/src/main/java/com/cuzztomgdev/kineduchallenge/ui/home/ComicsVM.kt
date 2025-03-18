@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
 import com.cuzztomgdev.kineduchallenge.domain.usecase.GetComicsUC
+import com.cuzztomgdev.kineduchallenge.ui.common.state.ComicsState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -34,6 +35,8 @@ class ComicsVM @Inject constructor(private val getComicsUC: GetComicsUC): ViewMo
                 val uniqueComics = newComics.filter { newComic ->
                     _comics.none { existingComic -> existingComic.id == newComic.id }
                 }
+                Log.i("Main Activity", "getComics: ${uniqueComics.map{"${it.id} - ${it.title}"}}")
+
                 _comics.addAll(uniqueComics)
                 _state.value = ComicsState.Success(_comics.toList())
             }
@@ -55,7 +58,7 @@ class ComicsVM @Inject constructor(private val getComicsUC: GetComicsUC): ViewMo
                 }
                 _state.update {
                     if (filteredComics.isEmpty()) {
-                        ComicsState.Error("No se encontraron comics")
+                        ComicsState.Error("Comics not found")
                     } else {
                         ComicsState.Success(filteredComics)
                     }

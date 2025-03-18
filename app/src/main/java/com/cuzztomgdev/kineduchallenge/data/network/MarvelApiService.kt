@@ -11,7 +11,12 @@ interface MarvelApiService {
     @GET("/v1/public/comics")
     suspend fun getComics(
         @Query("offset") offset: Int,
-       @Query("limit") limit: Int
+        @Query("limit") limit: Int,
+    ): ComicsResponse
+
+    @GET("/v1/public/comics/{comicId}")
+    suspend fun getComicById(
+        @Path("comicId") comicId: Int,
     ): ComicsResponse
 
     @GET("/v1/public/creators/{creatorId}")
