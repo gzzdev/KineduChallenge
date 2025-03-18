@@ -6,5 +6,6 @@ data class Comic(
     val id: Int,
     val title: String,
     val imageUri: String,
-    val description: String? = ""
+    val description: String,
+    val creators: List<Int> = emptyList(),
 ): Serializable

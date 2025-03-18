@@ -1,7 +1,9 @@
 package com.cuzztomgdev.kineduchallenge.domain
 
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
+import com.cuzztomgdev.kineduchallenge.domain.model.Creator
 
 interface Repository {
-    suspend fun getComics(offset: Int = 0, limit: Int = 100): List<Comic>
+    suspend fun getComics(offset: Int, limit: Int): List<Comic>
+    suspend fun getCreatorById(creatorId: Int): Creator?
 }

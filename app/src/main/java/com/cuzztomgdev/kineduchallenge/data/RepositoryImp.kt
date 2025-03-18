@@ -2,21 +2,49 @@ package com.cuzztomgdev.kineduchallenge.data
 
 import android.util.Log
 import com.cuzztomgdev.kineduchallenge.data.core.mapper.toDomain
+import com.cuzztomgdev.kineduchallenge.data.local.CreatorDao
+import com.cuzztomgdev.kineduchallenge.data.local.entity.CreatorEntity
 import com.cuzztomgdev.kineduchallenge.data.network.MarvelApiService
 import com.cuzztomgdev.kineduchallenge.domain.Repository
 import com.cuzztomgdev.kineduchallenge.domain.model.Comic
+import com.cuzztomgdev.kineduchallenge.domain.model.Creator
 import javax.inject.Inject
 
-class RepositoryImp @Inject constructor(private val marvelApiService: MarvelApiService) : Repository {
+class RepositoryImp @Inject constructor(
+    private val marvelApiService: MarvelApiService,
+    private val creatorDao: CreatorDao
+) : Repository {
 
     override suspend fun getComics(offset: Int, limit: Int): List<Comic> {
         runCatching {
                 marvelApiService.getComics(offset, limit)
-            }.onSuccess {
-                return it.data.results.map { dao ->
-                    dao.toDomain() }
+            }.onSuccess { response ->
+                response.data.results.forEach {
+                    try {
+                        it.creators.items.forEach { creator ->
+                            creatorDao.insert(
+                                CreatorEntity(
+                                    creator.getIdFromResourceURI(),
+                                    creator.name,
+                                    creator.role,
+                                    ""
+                                )
+                            )
+                        }
+                    } catch (e: Exception) {
+
+                    }
+                }
+                return response.data.results.map { dao ->
+                    dao.toDomain()
+                }
+            }.onFailure {
+                Log.i("Main Repository", "GetComics error: ${it.message}")
             }
-            .onFailure { Log.i("Main Repository", "GetComics error: ${it.message}") }
         return emptyList()
+    }
+
+    override suspend fun getCreatorById(creatorId: Int): Creator? {
+        return creatorDao.getCreatorById(creatorId)?.toDomain()
     }
 }

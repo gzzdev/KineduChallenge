@@ -1,4 +1,4 @@
-package com.cuzztomgdev.kineduchallenge.data.dto
+package com.cuzztomgdev.kineduchallenge.data.network.dto
 
 data class ThumbnailDTO(
     val path: String,
