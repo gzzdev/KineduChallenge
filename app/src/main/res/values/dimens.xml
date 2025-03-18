@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="corner_radious">4dp</dimen>
+    <dimen name="min_margin">4dp</dimen>
+    <dimen name="big_padding">16dp</dimen>
+    <dimen name="min_size">12sp</dimen>
+    <dimen name="margin">8dp</dimen>
+    <dimen name="max_size">18sp</dimen>
+    <dimen name="middle_size">16sp</dimen>
+    <dimen name="min_elevation">1dp</dimen>
+    <dimen name="big_margin">16dp</dimen>
+    <dimen name="small_size">14sp</dimen>
+</resources>

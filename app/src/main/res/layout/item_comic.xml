@@ -3,14 +3,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent"
-    android:layout_margin="4dp"
+    android:layout_margin="@dimen/min_margin"
     android:layout_width="match_parent"
     android:layout_height="216dp">
     <androidx.cardview.widget.CardView
-        app:cardCornerRadius="2dp"
+        app:cardCornerRadius="@dimen/corner_radious"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="@dimen/min_margin"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_title">
         <ImageView
@@ -24,11 +24,11 @@
     <TextView
         tools:text="Spiderman"
         android:id="@+id/tv_title"
-        android:textSize="12sp"
+        android:textSize="@dimen/min_size"
         android:textAlignment="center"
-        android:layout_marginHorizontal="4dp"
+        android:layout_marginHorizontal="@dimen/min_margin"
         android:textStyle="bold"
-        android:textColor="@color/black"
+        android:textColor="@color/md_theme_onSurface"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         app:layout_constraintBottom_toBottomOf="parent" />

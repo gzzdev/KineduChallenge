@@ -8,10 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.core.app.ActivityOptionsCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.ActivityNavigatorExtras
+import androidx.navigation.NavDestination
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -117,7 +120,8 @@ class ComicsFragment : Fragment() {
     }
 
     private fun onClickComic(comic: Comic) {
-        Log.i("Main Activity", "onClickComic: ${comic.id}")
-        findNavController().navigate(ComicsFragmentDirections.actionComicsFragmentToComicDetailActivity(comic))
+        findNavController().navigate(
+            ComicsFragmentDirections.actionComicsFragmentToComicDetailActivity(comic),
+        )
     }
 }

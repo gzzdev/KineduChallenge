@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -63,6 +64,8 @@ class ComicsAdapter(
         @SuppressLint("UseCompatLoadingForDrawables")
         fun bind(comic: Comic, onClick: (Comic) -> Unit) {
             val context = binding.root.context
+            binding.root.animation =
+                AnimationUtils.loadAnimation(context, R.anim.comic_transation)
             binding.tvTitle.text = formatTitle(comic.title)
             Glide.with(context)
                 .load(comic.imageUri)

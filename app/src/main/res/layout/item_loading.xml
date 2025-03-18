@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/big_padding">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:indeterminate="true"
-        app:trackColor="@color/bg_red"
-        app:indicatorColor="@color/red" />
+        app:trackColor="@color/md_theme_secondary"
+        app:indicatorColor="@color/md_theme_primary" />
 
 </LinearLayout>
